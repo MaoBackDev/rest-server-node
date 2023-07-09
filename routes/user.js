@@ -1,16 +1,31 @@
 const { Router } = require("express");
+const { check } = require("express-validator");
+const router = Router();
+
+// Controllers
 const {
   getUsers,
   createUser,
   updateUser,
   deleteUser,
 } = require("../controllers/users");
-const { check } = require("express-validator");
-const { userValidation } = require("../middlewares/user-validate");
-const Role = require("../models/role");
-const { rolIsValid, isEmail, userByIdExist } = require("../helpers/db-validators");
-const router = Router();
 
+//Helpers
+const { 
+  rolIsValid, 
+  isEmail, 
+  userByIdExist 
+} = require("../helpers/db-validators");
+
+// Middlewares
+const {
+  validateFields,
+  validateJWT,
+  isAdmin,
+  hasRole
+} = require('../middlewares')
+
+// Routers
 router.get("/", getUsers);
 
 router.post("/", [
@@ -19,7 +34,7 @@ router.post("/", [
     check('password', 'El password debe contener al menos 6 caracteres').isLength({min: 6}),
     check('email').custom(isEmail),
     check('rol').custom(rolIsValid),
-    userValidation
+    validateFields
   ], 
   createUser
 );
@@ -28,16 +43,20 @@ router.put("/:id", [
     check('id', 'No es un id válido').isMongoId(),
     check('rol').custom(rolIsValid),
     check('id').custom(userByIdExist),
-    userValidation
+    validateFields
   ], 
   updateUser
 );
 
 router.delete("/:id",[
+  validateJWT,
+  // isAdmin,
+  hasRole('USER_ROLE', 'SELLER_ROLE'),
   check('id', 'No es un id válido').isMongoId(),
   check('id').custom(userByIdExist),
-  userValidation
-],
- deleteUser);
+  validateFields
+  ],
+  deleteUser
+);
 
 module.exports = router;

@@ -3,7 +3,8 @@ const User = require('../models/user');
 
 const rolIsValid = async (rol = '') => {
   const isRole = await Role.findOne({rol});
-  if(!isRole) throw new Error(`El rol ${rol} no existe`);
+  if(!isRole) 
+    throw new Error(`El rol ${rol} no existe`);
 }
 
 const isEmail = async (email = '') => {

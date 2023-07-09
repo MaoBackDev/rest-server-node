@@ -1,6 +1,6 @@
 const { response } = require("express");
-const User  = require('../models/user');
 const bcrypt = require('bcryptjs');
+const User  = require('../models/user');
 
 const getUsers = async (req, res = response) => {
   const { limit = 10, from = 0 } = req.query;
@@ -17,7 +17,6 @@ const getUsers = async (req, res = response) => {
 };
 
 const createUser = async (req, res = response) => {
-
   const {name, password, email, rol} = req.body;
   const user = new User({name, password, email, rol});
 
@@ -27,8 +26,8 @@ const createUser = async (req, res = response) => {
 
   try {
     const newUser = await user.save();
-
     res.status(201).json(newUser);
+    
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -42,24 +41,27 @@ const updateUser = async(req, res = response) => {
     const salt = bcrypt.genSaltSync();
     rest.password = bcrypt.hashSync(password, salt);
   }
-  const user = await User.findByIdAndUpdate(id, rest);
-  res.send({
-    user
-  });
+
+  try {
+    const user = await User.findByIdAndUpdate(id, {$set: rest});
+    res.status(200).res.json(user);
+
+  } catch (error) {
+    res.status(500).json(error)
+  }
+  
 };
 
 const deleteUser =  async (req, res = response) => {
   const { id } = req.params;
 
-  // Eliminar registro fisicamente de la base de datos
-  // const deleted = await User.findByIdAndDelete(id); 
+  try {
+    const userDeleted = await User.findByIdAndUpdate(id, {status: false}); 
+    res.status(200).json(userDeleted );
 
-  // Eliminar registro anulando el estado del usuario -> RECOMENDADO
-  const deleted = await User.findByIdAndUpdate(id, {status: false}); 
-  
-  res.json({
-    deleted
-  });
+  } catch (error) {
+    res.status(500).json(error)
+  }
 };
 
 module.exports = {
