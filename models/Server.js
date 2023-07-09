@@ -31,7 +31,8 @@ class Server {
 
   routes() {
     this.app.get('/', (req, res) => {
-      res.sendFile(__dirname + 'index.html');
+      res.send('Welcome to Coffe Shopp');
+      // res.sendFile(__dirname + 'index.html');
     })
     this.app.use(this.usersPath, require("../routes/user"));
   }
