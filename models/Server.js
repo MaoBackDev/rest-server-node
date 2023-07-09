@@ -8,7 +8,6 @@ class Server {
     this.app = express();
     this.port = process.env.PORT;
     this.usersPath = "/api/users";
-    app.use(express.static('public'));
 
     // Connection database
     this.connectionDB();
@@ -31,6 +30,10 @@ class Server {
   }
 
   routes() {
+    this.app.get('/', (req, res) => {
+      // res.sendFile(__dirname + 'index.html')
+      res.sendFile('index.html', {root: path.join(__dirname, 'public')});
+    })
     this.app.use(this.usersPath, require("../routes/user"));
   }
 
