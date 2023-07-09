@@ -31,8 +31,7 @@ class Server {
 
   routes() {
     this.app.get('/', (req, res) => {
-      // res.sendFile(__dirname + 'index.html')
-      res.sendFile('index.html', {root: path.join(__dirname, 'public')});
+      res.sendFile(__dirname + 'index.html');
     })
     this.app.use(this.usersPath, require("../routes/user"));
   }
