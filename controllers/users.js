@@ -43,7 +43,7 @@ const updateUser = async(req, res = response) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(id, {$set: rest});
+    const user = await User.findByIdAndUpdate(id, {new: rest});
     res.status(200).res.json(user);
 
   } catch (error) {
