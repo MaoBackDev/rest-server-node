@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const fileUpload = require('express-fileupload');
 const { connectDB } = require("../database/config");
 
 class Server {
@@ -10,11 +11,12 @@ class Server {
     this.paths = {
       auth : "/api/auth",
       categories : "/api/categories",
-      users : "/api/users",
       products : "/api/products",
+      search : "/api/search",
+      users : "/api/users",
+      uploads : "/api/uploads",
     }
    
-
     // Connection database
     this.connectionDB();
 
@@ -33,14 +35,21 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.static("public"));
+    this.app.use(fileUpload({
+      useTempFiles : true,
+      tempFileDir : '/tmp/',
+      createParentPath: true
+    }));
   }
 
   routes() {
     this.app.get('/', (req, res) => res.send('Welcome to Coffe Shopp'));
     this.app.use(this.paths.auth, require("../routes/auth"));
     this.app.use(this.paths.categories, require("../routes/category"));
-    this.app.use(this.paths.users, require("../routes/user"));
     this.app.use(this.paths.products, require("../routes/product"));
+    this.app.use(this.paths.search, require("../routes/search"));
+    this.app.use(this.paths.users, require("../routes/user"));
+    this.app.use(this.paths.uploads, require("../routes/uploads"));
   }
 
   listen() {

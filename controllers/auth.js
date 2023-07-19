@@ -1,10 +1,15 @@
 const { response } = require("express");
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs');
-const { generateJWT } = require("../helpers/generateJWT");
-const { googleVerify } = require("../helpers/google-verify");
+const { generateJWT, googleVerify } = require("../helpers");
 
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const login = async (req, res=response) => {
   const {email, password} = req.body;
 
@@ -73,7 +78,7 @@ const googleSignIn = async (req, res = response) => {
     })
 
     // Generar token
-    const token = await generateJWT(user.id);
+    // const token = await generateJWT(user.id);
 
     res.status(201).json({
       user,

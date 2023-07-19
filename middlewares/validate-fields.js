@@ -5,6 +5,7 @@ const {
   isEmail,
   rolIsValid,
   userByIdExist,
+  allowCollections,
 } = require("../helpers/db-validators");
 const { validatExpress } = require("./validate-express");
 const { validateJWT } = require("./validateJWT");
@@ -114,6 +115,12 @@ const deleteUserValidator = [
   validatExpress,
 ];
 
+const fileValidator = [
+  check("id", "No es un id válido").isMongoId(),
+  check("collection").custom( (c) => allowCollections( c, ['users', 'products']) ),
+  validatExpress,
+];
+
 module.exports = {
   productValidator,
   postProductValidator,
@@ -128,4 +135,5 @@ module.exports = {
   postUserValidator,
   putUserValidator,
   deleteUserValidator,
+  fileValidator
 };

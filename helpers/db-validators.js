@@ -32,10 +32,18 @@ const productExist = async(id) => {
     throw new Error('Producto no encontrado');
 }
 
+const allowCollections = (collection = '', collections = []) => {
+  const isCollection = collections.includes(collection);
+
+  if(!isCollection) throw new Error(`La colección ${collection} no es permitida ==> ${collections}`);
+  return true
+}
+
 module.exports = {
   rolIsValid,
   isEmail,
   userByIdExist,
   categoryExist,
-  productExist
+  productExist,
+  allowCollections
 }
